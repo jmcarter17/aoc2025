@@ -1,4 +1,5 @@
 from itertools import accumulate, pairwise
+from pathlib import Path
 
 def parse_input(file):
     to_int = lambda x: (-1 if x[0] == 'L' else 1) * int(x[1:])
@@ -20,7 +21,8 @@ def part2(data):
 
 
 def main():
-    data = parse_input("input.txt")
+    folder = Path(__file__).resolve().parent
+    data = parse_input(folder / "input.txt")
     print(f"part1: {part1(data)}")
     print(f"part2: {part2(data)}")
 
