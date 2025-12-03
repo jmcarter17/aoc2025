@@ -19,30 +19,29 @@ def max_joltage(digits, n):
     return int(''.join(map(str, stack[:n])))
 
 
-# def max_joltage_old(row):
-#     x = max(row)
-#     i = row.index(x)
-#     if i == len(row) - 1:
-#         y = max(row[:i])
-#         joltage = y*10 + x
-#     else:
-#         y = max(row[i+1:])
-#         joltage = x*10 + y
-#     return joltage
+def max_joltage_old(row, n):
+    digits = []
+    i = 0
+    l = len(row)
+    while n > 0:
+        digits.append(max(row[i:l-n+1]))
+        i += row[i:l-n+1].index(digits[-1]) + 1
+        n -= 1
+    return int(''.join(map(str, digits)))
 
 
 def part1(data):
-    return sum(max_joltage(row, 2) for row in data)
+    return sum(max_joltage_old(row, 2) for row in data)
 
 
 def part2(data):
-    return sum(max_joltage(row, 12) for row in data)
+    return sum(max_joltage_old(row, 12) for row in data)
 
 
 def main():
     folder = Path(__file__).resolve().parent
-    data = parse_input(folder / "input.txt")
-    # print(f"part1: {part1(data)}")
+    data = parse_input(folder / "test_input.txt")
+    print(f"part1: {part1(data)}")
     print(f"part2: {part2(data)}")
 
 if __name__ == "__main__":
