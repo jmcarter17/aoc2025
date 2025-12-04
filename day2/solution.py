@@ -1,4 +1,5 @@
 from pathlib import Path
+folder = Path(__file__).resolve().parent
 
 def parse_input(file):
     with open(file) as f:
@@ -27,10 +28,17 @@ def part2(data):
 
 
 def main():
-    folder = Path(__file__).resolve().parent
     data = parse_input(folder / "input.txt")
     print(f"part1: {part1(data)}")
     print(f"part2: {part2(data)}")
+
+def test_part1():
+    data = parse_input(folder / "test_input.txt")
+    assert part1(data) == 1227775554
+
+def test_part2():
+    data = parse_input(folder / "test_input.txt")
+    assert part2(data) == 4174379265
 
 if __name__ == "__main__":
     main()
