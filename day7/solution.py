@@ -9,7 +9,6 @@ def parse_input(file):
 def part1(data):
     count = 0
     indices = {data[0].index("S")}
-    print(indices)
     for line in data[1:]:
         for i, c in enumerate(line):
             if c == "^" and i in indices:
@@ -25,13 +24,12 @@ def part2(data):
     count = 1
     indices = defaultdict(int)
     indices[data[0].index("S")] = 1
-    print(indices)
     for line in data[1:]:
         for i, c in enumerate(line):
-            if c == "^" and i in indices:
+            if c == "^" and indices[i]:
                 cur = indices[i]
                 count += cur
-                indices[i] = 0
+                indices.pop(i)
                 indices[i-1] += cur
                 indices[i+1] += cur
     return count
