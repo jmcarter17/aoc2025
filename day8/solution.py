@@ -8,57 +8,63 @@ def parse_input(file):
     with open(file) as f:
         return [tuple(map(int, l.strip().split(","))) for l in f]
 
+def find(parent, point):
+    if parent[point] != point:
+        parent[point] = find(parent, parent[point])  # Path compression
+    return parent[point]
 
-def part1(data):
-    all_pairs = combinations(data, 2)
-    sorted_pairs = sorted(all_pairs, key=lambda pair: math.dist(pair[0], pair[1]))
-    first_n = islice(sorted_pairs, 1000)
-    circuits = []
-    for p1, p2 in first_n:
-        to_merge = []
-        for i, circuit in enumerate(circuits):
-            if p1 in circuit or p2 in circuit:
-                circuit |= {p1, p2}
-                to_merge.append(i)
-        if to_merge:
-            base = circuits[to_merge[0]]
-            for i in reversed(to_merge[1:]):
-                base |= circuits[i]
-                del circuits[i]
-        else:
-            circuits.append({p1, p2})
-    sorted_circuits = sorted(circuits, key=len, reverse=True)
-    print(sorted_circuits)
-    return reduce(mul, (len(circuit) for circuit in list(sorted_circuits)[:3]), 1)
+def union(parent, p1, p2):
+    root1, root2 = find(parent, p1), find(parent, p2)
+    if root1 != root2:
+        parent[root2] = root1
+        return True
+    return False
+
+def build_sorted_pairs(data):
+    """Build and sort all pairs by distance."""
+    return sorted(
+        combinations(data, 2),
+        key=lambda pair: math.dist(pair[0], pair[1])
+    )
+
+def part1(data, n):
+    parent = {point: point for point in data}
+    sorted_pairs = build_sorted_pairs(data)
+
+    # Build circuits by connecting pairs
+    for p1, p2 in sorted_pairs[:n]:
+        union(parent, p1, p2)
+
+    # Group points by their root
+    circuits = {}
+    for point in data:
+        root = find(parent, point)
+        circuits.setdefault(root, []).append(point)
+
+    # Get sizes of three largest circuits
+    top3_sizes = sorted((len(circuit) for circuit in circuits.values()), reverse=True)[:3]
+    return reduce(mul, top3_sizes, 1)
 
 
 def part2(data):
-    full_len = len(data)
-    all_pairs = combinations(data, 2)
-    sorted_pairs = sorted(all_pairs, key=lambda pair: math.dist(pair[0], pair[1]))
-    circuits = []
+    parent = {point: point for point in data}
+    sorted_pairs = build_sorted_pairs(data)
+
+    # Connect pairs until all points are in one circuit
+    num_components = len(data)
     for p1, p2 in sorted_pairs:
-        to_merge = []
-        for i, circuit in enumerate(circuits):
-            if p1 in circuit or p2 in circuit:
-                circuit |= {p1, p2}
-                to_merge.append(i)
-        if to_merge:
-            base = circuits[to_merge[0]]
-            for i in reversed(to_merge[1:]):
-                base |= circuits[i]
-                del circuits[i]
-        else:
-            circuits.append({p1, p2})
-        if len(circuits) == 1 and len(circuits[0]) == full_len:
-            return p1[0] * p2[0]
+        merged = union(parent, p1, p2)
+        if merged:
+            num_components -= 1
+            if num_components == 1:
+                return p1[0] * p2[0]
+    return None
 
 
 def main():
     folder = Path(__file__).resolve().parent
     data = parse_input(folder / "input.txt")
-    # print(data)
-    print(f"part1: {part1(data)}")
+    print(f"part1: {part1(data, n=1000)}")
     print(f"part2: {part2(data)}")
 
 if __name__ == "__main__":
