@@ -2,19 +2,17 @@ from pathlib import Path
 import numpy as np
 from scipy.signal import convolve2d
 
+
 def parse_input(file):
     with open(file) as f:
-        return np.array([
-            [(1 if char == "@" else 0) for char in line.strip()]
-            for line in f
-        ])
+        return np.array(
+            [[(1 if char == "@" else 0) for char in line.strip()] for line in f]
+        )
 
 
 def removable(data):
-    kernel = np.array([[1, 1, 1],
-                       [1, 0, 1],
-                       [1, 1, 1]])
-    neighbors = convolve2d(data, kernel, mode='same', boundary='fill', fillvalue=0)
+    kernel = np.array([[1, 1, 1], [1, 0, 1], [1, 1, 1]])
+    neighbors = convolve2d(data, kernel, mode="same", boundary="fill", fillvalue=0)
     return (data == 1) & (neighbors < 4)
 
 
@@ -33,12 +31,12 @@ def part2(data):
     return count
 
 
-
 def main():
     folder = Path(__file__).resolve().parent
     data = parse_input(folder / "input.txt")
     print(f"part1: {part1(data)}")
     print(f"part2: {part2(data)}")
+
 
 if __name__ == "__main__":
     main()

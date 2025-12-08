@@ -1,5 +1,6 @@
 from pathlib import Path
 
+
 def parse_input(file):
     with open(file) as f:
         return list(tuple(map(int, l.strip())) for l in f)
@@ -16,7 +17,7 @@ def max_joltage(digits, n):
             k -= 1
         stack.append(d)
 
-    return int(''.join(map(str, stack[:n])))
+    return int("".join(map(str, stack[:n])))
 
 
 def max_joltage_old(row, n):
@@ -24,10 +25,10 @@ def max_joltage_old(row, n):
     i = 0
     l = len(row)
     while n > 0:
-        digits.append(max(row[i:l-n+1]))
-        i += row[i:l-n+1].index(digits[-1]) + 1
+        digits.append(max(row[i : l - n + 1]))
+        i += row[i : l - n + 1].index(digits[-1]) + 1
         n -= 1
-    return int(''.join(map(str, digits)))
+    return int("".join(map(str, digits)))
 
 
 def part1(data):
@@ -43,6 +44,7 @@ def main():
     data = parse_input(folder / "test_input.txt")
     print(f"part1: {part1(data)}")
     print(f"part2: {part2(data)}")
+
 
 if __name__ == "__main__":
     main()

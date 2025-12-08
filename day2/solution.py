@@ -1,5 +1,7 @@
 from pathlib import Path
+
 folder = Path(__file__).resolve().parent
+
 
 def parse_input(file):
     with open(file) as f:
@@ -14,16 +16,16 @@ def divisors_of(length):
 
 
 def sum_invalids(data, is_invalid):
-    return sum(x for (a, b) in data for x in range(a, b+1) if is_invalid(str(x)))
+    return sum(x for (a, b) in data for x in range(a, b + 1) if is_invalid(str(x)))
 
 
 def part1_naive(data):
-    inv = lambda s: s == s[:len(s)//2]*2
+    inv = lambda s: s == s[: len(s) // 2] * 2
     return sum_invalids(data, inv)
 
 
 def part2_naive(data):
-    inv = lambda s: any(s == s[:len(s)//k]*k for k in (divisors_of(len(s))))
+    inv = lambda s: any(s == s[: len(s) // k] * k for k in (divisors_of(len(s))))
     return sum_invalids(data, inv)
 
 
@@ -53,7 +55,7 @@ def generate_invalids(a, b, divisor_filter=None):
             pattern_len = length // k
 
             # Generate all possible patterns of length pattern_len
-            start = 10**(pattern_len - 1) if pattern_len > 1 else 0
+            start = 10 ** (pattern_len - 1) if pattern_len > 1 else 0
             end = 10**pattern_len
 
             for pattern_num in range(start, end):
@@ -69,7 +71,9 @@ def generate_invalids(a, b, divisor_filter=None):
 
 def part1_optimized(data):
     """Optimized part1: generate invalid IDs where pattern repeats exactly twice (k=2)"""
-    return sum(sum(generate_invalids(a, b, divisor_filter=lambda k: k == 2)) for a, b in data)
+    return sum(
+        sum(generate_invalids(a, b, divisor_filter=lambda k: k == 2)) for a, b in data
+    )
 
 
 def part2_optimized(data):
@@ -84,27 +88,33 @@ def main():
     print(f"part1_optimized: {part1_optimized(data)}")
     print(f"part2_optimized: {part2_optimized(data)}")
 
+
 def test_part1():
     data = parse_input(folder / "test_input.txt")
     assert part1_naive(data) == 1227775554
+
 
 def test_part2():
     data = parse_input(folder / "test_input.txt")
     assert part2_naive(data) == 4174379265
 
+
 def test_part1_optimized():
     data = parse_input(folder / "test_input.txt")
     assert part1_optimized(data) == 1227775554
 
+
 def test_part2_optimized():
     data = parse_input(folder / "test_input.txt")
     assert part2_optimized(data) == 4174379265
+
 
 def test_optimized_matches_original():
     """Verify optimized solutions match original solutions"""
     data = parse_input(folder / "test_input.txt")
     assert part1_naive(data) == part1_optimized(data)
     assert part2_naive(data) == part2_optimized(data)
+
 
 if __name__ == "__main__":
     main()
