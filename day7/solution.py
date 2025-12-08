@@ -20,7 +20,6 @@ def part1(data):
 
 
 def part2(data):
-    ...
     count = 1
     indices = defaultdict(int)
     indices[data[0].index("S")] = 1
