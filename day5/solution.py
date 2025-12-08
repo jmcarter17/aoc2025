@@ -27,7 +27,6 @@ def part2(ranges):
 def main():
     folder = Path(__file__).resolve().parent
     data = parse_input(folder / "input.txt")
-    print(data[0], data[1])
     print(f"part1: {part1(*data)}")
     print(f"part2: {part2(data[0])}")
 
