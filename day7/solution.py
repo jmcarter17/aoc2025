@@ -1,45 +1,48 @@
-from collections import defaultdict
+from collections import Counter
 from pathlib import Path
 
 
 def parse_input(file):
     with open(file) as f:
-        return [l.strip() for l in f]
+        start, *rows = [l.strip() for l in f if l.strip()]
+        start = start.index("S")
+        splitters = [{i for i, c in enumerate(row) if c == "^"} for row in rows if "^" in row]
+        return start, splitters
 
 
-def part1(data):
+def part1(start, splitters):
+    beams = {start}
     count = 0
-    indices = {data[0].index("S")}
-    for line in data[1:]:
-        for i, c in enumerate(line):
-            if c == "^" and i in indices:
-                count += 1
-                indices.discard(i)
-                indices.add(i - 1)
-                indices.add(i + 1)
+    for split_positions in splitters:
+        hits = beams & split_positions
+        count += len(hits)
+        beams -= hits
+        for hit in hits:
+            beams |= {hit - 1, hit + 1}
     return count
 
 
-def part2(data):
-    count = 1
-    indices = defaultdict(int)
-    indices[data[0].index("S")] = 1
-    for line in data[1:]:
-        for i, c in enumerate(line):
-            if c == "^" and indices[i]:
-                cur = indices[i]
-                count += cur
-                indices.pop(i)
-                indices[i - 1] += cur
-                indices[i + 1] += cur
-    return count
+def part2(start, splitters):
+    beams = Counter()
+    beams[start] = 1
+    for row in splitters:
+        new_beams = Counter()
+        hits = beams.keys() & row
+        misses = beams.keys() - hits
+        for hit in hits:
+            new_beams[hit - 1] += beams[hit]
+            new_beams[hit + 1] += beams[hit]
+        for miss in misses:
+            new_beams[miss] += beams[miss]
+        beams = new_beams
+    return beams.total()
 
 
 def main():
     folder = Path(__file__).resolve().parent
-    data = parse_input(folder / "input.txt")
-    print(f"part1: {part1(data)}")
-    print(f"part2: {part2(data)}")
+    start, splitters = parse_input(folder / "input.txt")
+    print(f"part1: {part1(start, splitters)}")
+    print(f"part2: {part2(start, splitters)}")
 
 
 if __name__ == "__main__":
