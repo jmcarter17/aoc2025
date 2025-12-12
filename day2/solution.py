@@ -1,5 +1,7 @@
 from pathlib import Path
 
+from utilities.timer import timer
+
 folder = Path(__file__).resolve().parent
 
 
@@ -19,11 +21,12 @@ def sum_invalids(data, is_invalid):
     return sum(x for (a, b) in data for x in range(a, b + 1) if is_invalid(str(x)))
 
 
+@timer
 def part1_naive(data):
     inv = lambda s: s == s[: len(s) // 2] * 2
     return sum_invalids(data, inv)
 
-
+@timer
 def part2_naive(data):
     inv = lambda s: any(s == s[: len(s) // k] * k for k in (divisors_of(len(s))))
     return sum_invalids(data, inv)
@@ -68,14 +71,14 @@ def generate_invalids(a, b, divisor_filter=None):
 
     return list(invalids)
 
-
+@timer
 def part1_optimized(data):
     """Optimized part1: generate invalid IDs where pattern repeats exactly twice (k=2)"""
     return sum(
         sum(generate_invalids(a, b, divisor_filter=lambda k: k == 2)) for a, b in data
     )
 
-
+@timer
 def part2_optimized(data):
     """Optimized part2: generate invalid IDs for all divisors (k > 1)"""
     return sum(sum(generate_invalids(a, b)) for a, b in data)
@@ -83,10 +86,10 @@ def part2_optimized(data):
 
 def main():
     data = parse_input(folder / "input.txt")
-    # print(f"part1: {part1_naive(data)}")
-    # print(f"part2: {part2_naive(data)}")
-    print(f"part1_optimized: {part1_optimized(data)}")
-    print(f"part2_optimized: {part2_optimized(data)}")
+    # part1_naive(data)
+    # part2_naive(data)
+    part1_optimized(data)
+    part2_optimized(data)
 
 
 def test_part1():

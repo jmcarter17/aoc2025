@@ -1,6 +1,8 @@
 from itertools import accumulate, pairwise
 from pathlib import Path
 
+from utilities.timer import timer
+
 
 def parse_input(file):
     to_int = lambda x: (-1 if x[0] == "L" else 1) * int(x[1:])
@@ -8,10 +10,11 @@ def parse_input(file):
         return [to_int(x) for x in f]
 
 
+@timer
 def part1(data):
     return sum(x % 100 == 0 for x in accumulate(data, initial=50))
 
-
+@timer
 def part2(data):
     return sum(
         abs((y // 100) - (x // 100))
@@ -24,8 +27,8 @@ def part2(data):
 def main():
     folder = Path(__file__).resolve().parent
     data = parse_input(folder / "input.txt")
-    print(f"part1: {part1(data)}")
-    print(f"part2: {part2(data)}")
+    part1(data)
+    part2(data)
 
 
 if __name__ == "__main__":

@@ -2,6 +2,8 @@ from pathlib import Path
 import numpy as np
 from scipy.signal import convolve2d
 
+from utilities.timer import timer
+
 
 def parse_input(file):
     with open(file) as f:
@@ -16,10 +18,12 @@ def removable(data):
     return (data == 1) & (neighbors < 4)
 
 
+@timer
 def part1(data):
     return np.sum(removable(data))
 
 
+@timer
 def part2(data):
     count = 0
     while True:
@@ -34,8 +38,8 @@ def part2(data):
 def main():
     folder = Path(__file__).resolve().parent
     data = parse_input(folder / "input.txt")
-    print(f"part1: {part1(data)}")
-    print(f"part2: {part2(data)}")
+    part1(data)
+    part2(data)
 
 
 if __name__ == "__main__":

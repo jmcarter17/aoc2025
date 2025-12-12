@@ -2,24 +2,28 @@ from itertools import zip_longest, groupby
 from pathlib import Path
 from math import prod
 
+from utilities.timer import timer
+
 
 def parse_input(file):
     with open(file) as f:
-        *operands, ops = [line.strip("\n") for line in f if line.strip()]
+        *lines, ops = [line.strip("\n") for line in f]
         ops = [(sum if op == "+" else prod) for op in ops.split()]
-        return operands, ops
+        return lines, ops
 
 
-def part1(operands, ops):
-    data = [[int(x) for x in line.split()] for line in operands]
-    columns = zip(*data)
-    return sum(op(col) for op, col in zip(ops, columns))
+@timer
+def part1(lines, ops):
+    data = [[int(x) for x in line.split()] for line in lines]
+    operands = zip(*data)
+    return sum(op(col) for op, col in zip(ops, operands))
 
 
-def part2(operands, ops):
+@timer
+def part2(lines, ops):
     operands = [
         (int("".join(x)) if any(c != " " for c in x) else None)
-        for x in zip_longest(*operands, fillvalue=" ")
+        for x in zip_longest(*lines, fillvalue=" ")
     ]
     grouped = groupby(operands, lambda x: x is not None)
     columns = [list(g) for k, g in grouped if k]
@@ -29,8 +33,8 @@ def part2(operands, ops):
 def main():
     folder = Path(__file__).resolve().parent
     data = parse_input(folder / "input.txt")
-    print(f"part1: {part1(*data)}")
-    print(f"part2: {part2(*data)}")
+    part1(*data)
+    part2(*data)
 
 
 if __name__ == "__main__":

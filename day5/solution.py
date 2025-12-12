@@ -1,6 +1,8 @@
 from pathlib import Path
 from functools import reduce
 
+from utilities.timer import timer
+
 
 def parse_input(file):
     with open(file) as f:
@@ -10,6 +12,7 @@ def parse_input(file):
     return ranges, ids
 
 
+@timer
 def part1(ranges, ids):
     in_range = lambda id_: any(start <= id_ <= end for start, end in ranges)
     return sum(map(in_range, ids))
@@ -25,6 +28,7 @@ def merge_ranges(ranges):
     return reduce(merge_range, sorted(ranges), [])
 
 
+@timer
 def part2(ranges):
     merged = merge_ranges(ranges)
     return sum(end - start + 1 for start, end in merged)
@@ -33,8 +37,8 @@ def part2(ranges):
 def main():
     folder = Path(__file__).resolve().parent
     data = parse_input(folder / "input.txt")
-    print(f"part1: {part1(*data)}")
-    print(f"part2: {part2(data[0])}")
+    part1(*data)
+    part2(data[0])
 
 
 if __name__ == "__main__":

@@ -1,5 +1,7 @@
 from pathlib import Path
 
+from utilities.timer import timer
+
 
 def parse_input(file):
     with open(file) as f:
@@ -31,19 +33,20 @@ def max_joltage_old(row, n):
     return int("".join(map(str, digits)))
 
 
+@timer
 def part1(data):
     return sum(max_joltage_old(row, 2) for row in data)
 
-
+@timer
 def part2(data):
     return sum(max_joltage_old(row, 12) for row in data)
 
 
 def main():
     folder = Path(__file__).resolve().parent
-    data = parse_input(folder / "test_input.txt")
-    print(f"part1: {part1(data)}")
-    print(f"part2: {part2(data)}")
+    data = parse_input(folder / "input.txt")
+    part1(data)
+    part2(data)
 
 
 if __name__ == "__main__":

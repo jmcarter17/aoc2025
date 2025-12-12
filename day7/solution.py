@@ -1,6 +1,8 @@
 from collections import Counter
 from pathlib import Path
 
+from utilities.timer import timer
+
 
 def parse_input(file):
     with open(file) as f:
@@ -9,7 +11,7 @@ def parse_input(file):
         splitters = [{i for i, c in enumerate(row) if c == "^"} for row in rows if "^" in row]
         return start, splitters
 
-
+@timer
 def part1(start, splitters):
     beams = {start}
     count = 0
@@ -21,7 +23,7 @@ def part1(start, splitters):
             beams |= {hit - 1, hit + 1}
     return count
 
-
+@timer
 def part2(start, splitters):
     beams = Counter()
     beams[start] = 1

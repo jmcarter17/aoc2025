@@ -4,6 +4,8 @@ from pathlib import Path
 from functools import reduce
 from operator import mul
 
+from utilities.timer import timer
+
 
 def parse_input(file):
     with open(file) as f:
@@ -29,18 +31,19 @@ def build_sorted_pairs(data):
     return sorted(combinations(data, 2), key=lambda pair: math.dist(pair[0], pair[1]))
 
 
+@timer
 def part1(data, n):
-    parent = {point: point for point in data}
+    parents = {point: point for point in data}
     sorted_pairs = build_sorted_pairs(data)
 
     # Build circuits by connecting pairs
     for p1, p2 in sorted_pairs[:n]:
-        union(parent, p1, p2)
+        union(parents, p1, p2)
 
     # Group points by their root
     circuits = {}
     for point in data:
-        root = find(parent, point)
+        root = find(parents, point)
         circuits.setdefault(root, []).append(point)
 
     # Get sizes of three largest circuits
@@ -50,6 +53,7 @@ def part1(data, n):
     return reduce(mul, top3_sizes, 1)
 
 
+@timer
 def part2(data):
     parent = {point: point for point in data}
     sorted_pairs = build_sorted_pairs(data)
@@ -68,8 +72,8 @@ def part2(data):
 def main():
     folder = Path(__file__).resolve().parent
     data = parse_input(folder / "input.txt")
-    print(f"part1: {part1(data, n=1000)}")
-    print(f"part2: {part2(data)}")
+    part1(data, n=1000)
+    part2(data)
 
 
 if __name__ == "__main__":
