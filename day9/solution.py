@@ -1,8 +1,10 @@
 from itertools import combinations, pairwise, chain
 from pathlib import Path
 
+from matplotlib import pyplot as plt
 from shapely import box
 from shapely.geometry import Polygon
+from shapely.plotting import plot_polygon
 from shapely.prepared import prep
 
 from utilities.timer import timer
@@ -96,12 +98,20 @@ def part2_withlib(data):
     return max_area
 
 
+def plot_data(data):
+    polygon = Polygon(data)
+    plot_polygon(polygon)
+    plt.axis("equal")
+    plt.show()
+
+
 def main():
     folder = Path(__file__).resolve().parent
     data = parse_input(folder / "input.txt")
     part1(data)
     part2(data)
     part2_withlib(data)
+    # plot_data(data)
 
 
 if __name__ == "__main__":
